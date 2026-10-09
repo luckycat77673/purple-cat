@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#7C4DBF" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="喵紫" />
+<title>喵紫 · 我的紫色小猫</title>
+<style>
+  :root{
+    --purple-deep:#4A2A78;
+    --purple:#7C4DBF;
+    --purple-mid:#9B6BD6;
+    --purple-light:#C9A9EE;
+    --purple-pale:#EFE6FB;
+    --purple-glow:#B98CF0;
+    --pink:#F49AC1;
+    --gold:#FFC94D;
+    --cream:#FFFAF0;
+    --ink:#33234D;
+    --ink-soft:#6B5B87;
+    --card:#FFFFFF;
+    --ok:#4CC38A;
+    --red:#FF6B6B;
+    --shadow:0 10px 30px rgba(74,42,120,.18);
+    --shadow-sm:0 4px 14px rgba(74,42,120,.12);
+    --radius:22px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+    background:
+      radial-gradient(1200px 500px at 50% -10%, #B98CF0 0%, rgba(185,140,240,0) 60%),
+      linear-gradient(170deg,#7C4DBF 0%, #5A3390 40%, #3A2360 100%);
+    background-attachment:fixed;
+    min-height:100vh;
+    color:var(--ink);
+    overscroll-behavior-y:none;
+    user-select:none;
+    -webkit-user-select:none;
+    padding-bottom:calc(84px + env(safe-area-inset-bottom));
+  }
+  /* 星空点缀 */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      radial-gradient(2px 2px at 12% 18%, rgba(255,255,255,.85), transparent),
+      radial-gradient(1.6px 1.6px at 78% 12%, rgba(255,255,255,.7), transparent),
+      radial-gradient(2px 2px at 88% 42%, rgba(255,255,255,.6), transparent),
+      radial-gradient(1.4px 1.4px at 26% 56%, rgba(255,255,255,.6), transparent),
+      radial-gradient(1.8px 1.8px at 62% 74%, rgba(255,255,255,.5), transparent),
+      radial-gradient(1.4px 1.4px at 8% 82%, rgba(255,255,255,.5), transparent);
+    animation:twinkle 5s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle{from{opacity:.45}to{opacity:.95}}
+
+  .app{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:16px 16px 0;}
+
+  /* 顶栏 */
+  header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 4px 14px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .logo{
+    width:38px;height:38px;border-radius:12px;flex:0 0 auto;
+    background:linear-gradient(145deg,#C9A9EE,#7C4DBF);
+    display:grid;place-items:center;box-shadow:var(--shadow-sm);
+    font-size:20px;
+  }
+  .brand h1{font-size:19px;margin:0;color:#fff;letter-spacing:.5px;text-shadow:0 2px 8px rgba(0,0,0,.25);}
+  .brand p{margin:2px 0 0;font-size:11px;color:rgba(255,255,255,.72);}
+  .icon-btn{
+    border:0;background:rgba(255,255,255,.16);color:#fff;font-size:17px;
+    width:40px;height:40px;border-radius:13px;display:grid;place-items:center;
+    backdrop-filter:blur(8px);cursor:pointer;transition:.2s;
+  }
+  .icon-btn:active{transform:scale(.92);background:rgba(255,255,255,.3);}
+
+  /* 卡片 */
+  .card{
+    background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:18px;margin-bottom:14px;
+  }
+
+  /* 宠物区 */
+  .pet-stage{
+    position:relative;border-radius:var(--radius);overflow:hidden;
+    background:
+      radial-gradient(circle at 50% 118%, rgba(201,169,238,.55) 0%, rgba(201,169,238,0) 62%),
+      linear-gradient(180deg,#FBF7FF 0%, #EFE6FB 100%);
+    padding:8px 8px 14px;margin-bottom:14px;
+    box-shadow:var(--shadow);
+  }
+  .pet-name-row{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 8px 0;}
+  .pet-name{font-size:20px;font-weight:800;color:var(--purple-deep);letter-spacing:.5px;}
+  .lvl-chip{
+    background:linear-gradient(135deg,#B98CF0,#7C4DBF);color:#fff;font-size:11px;font-weight:700;
+    padding:4px 10px;border-radius:999px;box-shadow:0 3px 10px rgba(124,77,191,.35);
+  }
+  .stage-tag{font-size:11px;color:var(--ink-soft);background:#fff;padding:3px 9px;border-radius:999px;box-shadow:var(--shadow-sm);}
+
+  .cat-wrap{position:relative;display:grid;place-items:center;height:300px;margin-top:-4px;cursor:pointer;}
+  .cat-wrap:active #catSvg{transform:scale(.97);}
+  #catSvg{transition:transform .12s;}
+  .tap-hint{
+    position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
+    font-size:11px;color:var(--ink-soft);background:rgba(255,255,255,.8);
+    padding:4px 12px;border-radius:999px;box-shadow:var(--shadow-sm);
+    animation:hintPulse 2.2s ease-in-out infinite;pointer-events:none;white-space:nowrap;
+  }
+  @keyframes hintPulse{0%,100%{opacity:.55}50%{opacity:1}}
+  /* 音量滑块 */
+  .vol-row{display:flex;align-items:center;gap:10px;padding:0 8px 4px;}
+  .vol-row span{font-size:16px;}
+  .vol-row input[type=range]{
+    -webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:999px;
+    background:linear-gradient(90deg,#B98CF0,#E9DCFB);outline:none;
+  }
+  .vol-row input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;
+    background:#7C4DBF;box-shadow:0 2px 8px rgba(124,77,191,.5);cursor:pointer;border:2.5px solid #fff;
+  }
+  .vol-row input[type=range]::-moz-range-thumb{
+    width:20px;height:20px;border-radius:50%;background:#7C4DBF;cursor:pointer;border:2.5px solid #fff;
+  }
+  .vol-row b{font-size:12px;color:var(--ink-soft);width:34px;text-align:right;}
+  #catSvg{width:260px;height:260px;display:block;filter:drop-shadow(0 18px 22px rgba(74,42,120,.28));}
+  .breathe{animation:breathe 3.4s ease-in-out infinite;transform-origin:50% 88%;}
+  @keyframes breathe{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.035) translateY(-5px)}}
+  .happy-bounce{animation:happyBounce .6s ease;}
+  @keyframes happyBounce{0%{transform:translateY(0)}30%{transform:translateY(-22px) scale(1.05)}55%{transform:translateY(0) scale(.98)}75%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+
+  /* 飘字 */
+  .float-layer{position:absolute;inset:0;pointer-events:none;overflow:visible;}
+  .floater{
+    position:absolute;left:50%;top:46%;font-weight:800;font-size:20px;
+    transform:translate(-50%,0);animation:floatUp 1.15s ease-out forwards;white-space:nowrap;
+    text-shadow:0 2px 6px rgba(0,0,0,.15);
+  }
+  @keyframes floatUp{
+    0%{opacity:0;transform:translate(-50%,10px) scale(.7)}
+    18%{opacity:1;transform:translate(-50%,-6px) scale(1.12)}
+    100%{opacity:0;transform:translate(-50%,-86px) scale(1)}
+  }
+  .crumbs{position:absolute;font-size:15px;animation:crumbFall 1s ease-in forwards;}
+  @keyframes crumbFall{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),70px) rotate(200deg)}}
+
+  /* 进度条 */
+  .meters{padding:4px 6px 0;}
+  .meter{margin-bottom:11px;}
+  .meter-head{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-soft);margin-bottom:5px;font-weight:600;}
+  .bar{height:13px;border-radius:999px;background:#EDE4F8;overflow:hidden;position:relative;}
+  .bar>i{display:block;height:100%;border-radius:999px;transition:width .55s cubic-bezier(.4,1.4,.6,1);}
+  .bar.exp>i{background:linear-gradient(90deg,#B98CF0,#7C4DBF);}
+  .bar.full>i{background:linear-gradient(90deg,#FFC94D,#FF9F1C);}
+  .bar .shine{position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);}
+  .bar.hunger>i{background:linear-gradient(90deg,#4CC38A,#2FA36B);}
+  .bar.hunger.low>i{background:linear-gradient(90deg,#FFB74D,#FF6B6B);}
+  .bar.bond>i{background:linear-gradient(90deg,#F49AC1,#E0559B);}
+
+  /* 按钮 */
+  .actions{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px;padding:14px 6px 2px;}
+  .btn{
+    border:0;border-radius:16px;padding:13px 8px;font-size:14px;font-weight:800;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:3px;transition:.16s;font-family:inherit;
+  }
+  .btn:active{transform:scale(.94);}
+  .btn .sub{font-size:10px;font-weight:600;opacity:.82;}
+  .btn-feed{background:linear-gradient(135deg,#B98CF0,#7C4DBF);color:#fff;box-shadow:0 8px 20px rgba(124,77,191,.36);}
+  .btn-pet{background:#F6EFFE;color:var(--purple);box-shadow:inset 0 0 0 1.5px #DCC9F5;}
+  .btn-sleep{background:#F6EFFE;color:var(--purple);box-shadow:inset 0 0 0 1.5px #DCC9F5;}
+  .btn:disabled{opacity:.45;filter:grayscale(.4);}
+
+  /* 统计小卡 */
+  .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+  .stat{
+    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);
+    border-radius:16px;padding:11px 8px;text-align:center;color:#fff;backdrop-filter:blur(6px);
+  }
+  .stat b{display:block;font-size:19px;line-height:1.2;}
+  .stat span{font-size:10.5px;opacity:.82;}
+
+  /* Tab 内容 */
+  .tabpane{display:none;animation:fade .25s ease;}
+  .tabpane.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+  .sec-title{display:flex;align-items:center;justify-content:space-between;margin:2px 4px 12px;}
+  .sec-title h2{font-size:17px;margin:0;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.22);}
+  .sec-title .hint{font-size:11px;color:rgba(255,255,255,.72);}
+
+  /* 任务项 */
+  .task{
+    display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:16px;
+    background:#fff;box-shadow:var(--shadow-sm);margin-bottom:10px;transition:.2s;
+  }
+  .task.done{background:#F2FBF6;box-shadow:inset 0 0 0 1.5px #CDEBD9;}
+  .task .emoji{font-size:24px;width:38px;height:38px;border-radius:12px;background:var(--purple-pale);display:grid;place-items:center;flex:0 0 auto;}
+  .task.done .emoji{background:#E2F6EC;}
+  .task .info{flex:1;min-width:0;}
+  .task .info b{font-size:14.5px;font-weight:700;display:block;color:var(--ink);}
+  .task .info small{font-size:11px;color:var(--ink-soft);}
+  .task .reward{font-size:12px;font-weight:800;color:#C9871B;background:#FFF4D9;padding:4px 9px;border-radius:999px;white-space:nowrap;}
+  .task.done .reward{color:#2FA36B;background:#DEF6E8;}
+  .combo-tag{
+    display:inline-block;font-size:10.5px;font-weight:800;color:#C2185B;background:#FFE8F1;
+    padding:2.5px 8px;border-radius:999px;margin-top:5px;margin-right:5px;
+  }
+  .combo-tag.on{color:#fff;background:linear-gradient(135deg,#FF7A9C,#E0559B);box-shadow:0 3px 8px rgba(224,85,155,.3);}
+  .task .go{
+    border:0;border-radius:12px;padding:9px 15px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;
+    background:linear-gradient(135deg,#B98CF0,#7C4DBF);color:#fff;transition:.16s;white-space:nowrap;
+  }
+  .task .go:active{transform:scale(.93);}
+  .task .go.done{background:#E2F6EC;color:#2FA36B;}
+  .task .go:disabled{cursor:default;}
+
+  /* 记录 */
+  .log{display:flex;align-items:center;gap:11px;padding:11px 4px;border-bottom:1px dashed #EFE6FB;}
+  .log:last-child{border-bottom:0;}
+  .log .ico{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:17px;flex:0 0 auto;background:var(--purple-pale);}
+  .log .txt{flex:1;font-size:13.5px;color:var(--ink);}
+  .log .txt small{display:block;font-size:11px;color:var(--ink-soft);margin-top:2px;}
+  .log .amt{font-size:13px;font-weight:800;white-space:nowrap;}
+  .amt.plus{color:#2FA36B;}
+  .amt.minus{color:#E0559B;}
+  .empty{text-align:center;color:var(--ink-soft);font-size:13px;padding:26px 10px;}
+
+  /* 家长模式 */
+  .pm-banner{
+    background:linear-gradient(135deg,#FFE9B8,#FFD166);border-radius:16px;padding:12px 14px;
+    font-size:12.5px;color:#7A5200;font-weight:600;margin-bottom:14px;display:flex;gap:8px;align-items:center;
+  }
+  .edit-row{display:flex;align-items:center;gap:9px;padding:11px 12px;border-radius:14px;background:#FAF6FF;margin-bottom:9px;}
+  .edit-row input[type=text]{flex:1;min-width:0;border:1.5px solid #E4D7F7;border-radius:11px;padding:9px 11px;font-size:13.5px;font-family:inherit;background:#fff;color:var(--ink);}
+  .edit-row input[type=number]{width:62px;border:1.5px solid #E4D7F7;border-radius:11px;padding:9px 8px;font-size:13.5px;font-family:inherit;text-align:center;background:#fff;color:var(--ink);}
+  .edit-row input[type=text]:focus,.edit-row input[type=number]:focus{outline:none;border-color:var(--purple-mid);}
+  .edit-row .del{border:0;background:#FFECEC;color:#E04848;width:34px;height:34px;border-radius:11px;font-size:16px;cursor:pointer;flex:0 0 auto;}
+  .edit-row .del:active{transform:scale(.9);}
+  .btn-block{
+    width:100%;border:0;border-radius:15px;padding:14px;font-size:14.5px;font-weight:800;cursor:pointer;font-family:inherit;transition:.16s;
+  }
+  .btn-block:active{transform:scale(.97);}
+  .btn-add{background:#F6EFFE;color:var(--purple);box-shadow:inset 0 0 0 1.5px #DCC9F5;}
+  .btn-danger{background:#FFECEC;color:#E04848;margin-top:6px;}
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
+  .field input{width:100%;border:1.5px solid #E4D7F7;border-radius:13px;padding:12px 13px;font-size:15px;font-family:inherit;background:#fff;color:var(--ink);}
+  .field input:focus{outline:none;border-color:var(--purple-mid);box-shadow:0 0 0 3px rgba(155,107,214,.14);}
+
+  /* 底部 Tab */
+  nav{
+    position:fixed;left:0;right:0;bottom:0;z-index:20;
+    display:flex;justify-content:center;gap:2px;
+    padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.86);backdrop-filter:blur(16px) saturate(150%);
+    border-top:1px solid rgba(124,77,191,.12);
+  }
+  nav .inner{display:flex;width:100%;max-width:520px;}
+  nav button{
+    flex:1;border:0;background:transparent;padding:7px 2px;border-radius:14px;cursor:pointer;font-family:inherit;
+    display:flex;flex-direction:column;align-items:center;gap:3px;color:#9B8FB5;font-size:10.5px;font-weight:700;transition:.18s;
+  }
+  nav button .ni{font-size:19px;line-height:1;}
+  nav button.active{color:var(--purple);background:var(--purple-pale);}
+
+  /* 弹层 */
+  .modal{
+    position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:24px;
+    background:rgba(42,24,72,.5);backdrop-filter:blur(4px);
+  }
+  .modal.show{display:flex;animation:fade .2s ease;}
+  .modal .box{
+    background:#fff;border-radius:24px;padding:24px 20px 20px;width:100%;max-width:330px;text-align:center;
+    box-shadow:0 24px 60px rgba(42,24,72,.4);animation:pop .3s cubic-bezier(.34,1.5,.64,1);
+  }
+  @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal .box .big{font-size:44px;line-height:1;margin-bottom:8px;}
+  .modal .box h3{margin:0 0 6px;font-size:19px;color:var(--purple-deep);}
+  .modal .box p{margin:0 0 16px;font-size:13.5px;color:var(--ink-soft);line-height:1.6;}
+  .modal .box button{
+    width:100%;border:0;border-radius:14px;padding:13px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;
+    background:linear-gradient(135deg,#B98CF0,#7C4DBF);color:#fff;margin-bottom:8px;
+  }
+  .modal .box button.ghost{background:#F6EFFE;color:var(--purple);margin-bottom:0;}
+  .modal .box button:active{transform:scale(.97);}
+
+  .toast{
+    position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);
+    background:rgba(51,35,77,.94);color:#fff;font-size:13px;font-weight:600;padding:11px 18px;border-radius:999px;
+    z-index:80;opacity:0;transition:.28s;pointer-events:none;box-shadow:0 10px 26px rgba(0,0,0,.3);max-width:90vw;text-align:center;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="logo">🐱</div>
+      <div>
+        <h1 id="headTitle">喵紫 · 云养小猫</h1>
+        <p>完成小任务，投喂我的紫色小猫</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="icon-btn" id="soundBtn" title="音效">🔊</button>
+      <button class="icon-btn" id="gearBtn" title="家长模式">⚙️</button>
+    </div>
+  </header>
+
+  <!-- ===== 主页 ===== -->
+  <section class="tabpane active" data-pane="home">
+    <!-- 顶部统计 -->
+    <div class="stat-row">
+      <div class="stat"><b id="statFood">0</b><span>🐟 猫粮</span></div>
+      <div class="stat"><b id="statStreak">0</b><span>🔥 连续打卡</span></div>
+      <div class="stat"><b id="statCheckin">0</b><span>✅ 总打卡</span></div>
+    </div>
+
+    <!-- 宠物舞台 -->
+    <div class="pet-stage">
+      <div class="pet-name-row">
+        <span class="pet-name" id="petName">喵紫</span>
+        <span class="lvl-chip" id="lvlChip">Lv.1</span>
+        <span class="stage-tag" id="stageTag">幼猫</span>
+      </div>
+      <div class="cat-wrap" id="catWrap">
+        <div id="catSvg"></div>
+        <div class="float-layer" id="floatLayer"></div>
+        <div class="tap-hint" id="tapHint">👆 点我摸摸看</div>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="meters">
+        <div class="meter">
+          <div class="meter-head"><span>经验值</span><span id="expText">0 / 60</span></div>
+          <div class="bar exp"><i id="expBar" style="width:0%"></i><span class="shine"></span></div>
+        </div>
+        <div class="meter">
+          <div class="meter-head"><span>饱食度</span><span id="mealText">100%</span></div>
+          <div class="bar hunger"><i id="mealBar" style="width:100%"></i><span class="shine"></span></div>
+        </div>
+        <div class="meter" style="margin-bottom:2px">
+          <div class="meter-head"><span>亲密度</span><span id="bondText">0</span></div>
+          <div class="bar bond"><i id="bondBar" style="width:0%"></i><span class="shine"></span></div>
+        </div>
+      </div>
+
+      <div style="text-align:center;font-size:12.5px;margin:10px 8px 2px;font-weight:600" id="moodTip">小猫吃得饱饱的，正开心地摇尾巴 🐾</div>
+
+      <!-- 操作按钮 -->
+      <div class="actions">
+        <button class="btn btn-feed" id="feedBtn">
+          <span style="font-size:19px">🍚 投喂</span>
+          <span class="sub" id="feedSub">消耗 1 猫粮</span>
+        </button>
+        <button class="btn btn-pet" id="petBtn">
+          <span style="font-size:19px">🫶</span>
+          <span class="sub">撸猫 +1</span>
+        </button>
+        <button class="btn btn-sleep" id="sleepBtn">
+          <span style="font-size:19px">💤</span>
+          <span class="sub label">睡觉</span>
+        </button>
+      </div>
+
+      <!-- 音量 -->
+      <div class="vol-row">
+        <span id="volIcon">🔊</span>
+        <input type="range" id="volSlider" min="0" max="100" value="70">
+        <b id="volVal">70%</b>
+      </div>
+    </div>
+
+    <!-- 今日任务速览 -->
+    <div class="sec-title">
+      <h2>今日任务</h2>
+      <span class="hint">完成任务赚钱猫粮</span>
+    </div>
+    <div id="taskList"></div>
+  </section>
+
+  <!-- ===== 任务页 ===== -->
+  <section class="tabpane" data-pane="tasks">
+    <div class="sec-title">
+      <h2>任务清单</h2>
+      <span class="hint">每天可各完成一次</span>
+    </div>
+    <div id="taskList2"></div>
+    <div class="card" style="text-align:center;font-size:12.5px;color:var(--ink-soft)">
+      完成一项任务即可获得对应猫粮 🐟，攒够猫粮就能投喂小猫啦～
+    </div>
+  </section>
+
+  <!-- ===== 记录页 ===== -->
+  <section class="tabpane" data-pane="log">
+    <div class="sec-title">
+      <h2>成长记录</h2>
+      <span class="hint">最近 60 条</span>
+    </div>
+    <div class="stat-row" style="margin-bottom:14px">
+      <div class="stat"><b id="stTotalCheckin">0</b><span>总打卡</span></div>
+      <div class="stat"><b id="stTotalFeed">0</b><span>总投喂</span></div>
+      <div class="stat"><b id="stStreak">0</b><span>连续天数</span></div>
+    </div>
+    <div class="stat-row" style="margin-bottom:14px;grid-template-columns:1fr">
+      <div class="stat"><b id="stBond">0</b><span>💜 亲密度</span></div>
+    </div>
+    <div class="card">
+      <div id="logList"></div>
+    </div>
+  </section>
+
+  <!-- ===== 家长模式 ===== -->
+  <section class="tabpane" data-pane="parent">
+    <div class="sec-title">
+      <h2>家长模式</h2>
+      <span class="hint">设置任务与奖励</span>
+    </div>
+    <div class="pm-banner">🛠️ 可修改小猫名字、增删任务、调整奖励与分类。分类选「<b>学习</b>」的任务会有<b>连击加成</b>，改好记得点「保存设置」。</div>
+    <div class="pm-banner" style="background:linear-gradient(135deg,#FFE0EC,#FFC2DC);color:#9C2C5C;">🔥 连击规则：学习类任务连续多天完成可获额外猫粮 —— 连续 2 天 +1、3~4 天 +2、5 天及以上 +3。</div>
+
+    <div class="card">
+      <div class="field">
+        <label>小猫的名字</label>
+        <input type="text" id="pmName" placeholder="给它起个名字" maxlength="12">
+      </div>
+    </div>
+
+    <div class="sec-title"><h2 style="font-size:15px">任务与奖励</h2><span class="hint">名称 / 奖励猫粮</span></div>
+    <div id="pmTasks"></div>
+
+    <button class="btn-block btn-add" id="pmAdd" style="margin-bottom:10px">＋ 添加新任务</button>
+    <button class="btn-block btn-feed" id="pmSave">保存设置</button>
+    <button class="btn-block btn-danger" id="pmReset" style="margin-top:10px">重置全部数据</button>
+  </section>
+</div>
+
+<!-- 底部导航 -->
+<nav>
+  <div class="inner">
+    <button data-tab="home" class="active"><span class="ni">🏠</span>主页</button>
+    <button data-tab="tasks"><span class="ni">📋</span>任务</button>
+    <button data-tab="log"><span class="ni">📈</span>记录</button>
+    <button data-tab="parent"><span class="ni">⚙️</span>家长</button>
+  </div>
+</nav>
+
+<!-- 升级弹层 -->
+<div class="modal" id="levelModal">
+  <div class="box">
+    <div class="big" id="levelModalEmoji">🌟</div>
+    <h3 id="levelModalTitle">升级啦！</h3>
+    <p id="levelModalText"></p>
+    <button id="levelOk">太棒了！</button>
+  </div>
+</div>
+
+<!-- 重置确认弹层 -->
+<div class="modal" id="confirmModal">
+  <div class="box">
+    <div class="big">⚠️</div>
+    <h3>确认重置？</h3>
+    <p>将清空猫粮、等级、任务与全部记录，小猫会重新开始成长，此操作无法撤销。</p>
+    <button id="resetConfirm">确认重置</button>
+    <button class="ghost" id="resetCancel">我再想想</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   喵紫 · 紫色电子猫养成 App
+   纯前端 / localStorage 持久化 / 无依赖
+   ========================================================= */
+
+/* ---------- 成长阶段 ---------- */
+const STAGES = [
+  { key:'baby',    name:'幼猫',   min:0,    max:59,   scale:.82, deco:'none'  },
+  { key:'kit',     name:'小猫',   min:60,   max:169,  scale:.90, deco:'bell'  },
+  { key:'teen',    name:'少年猫', min:170,  max:339,  scale:.98, deco:'bow'   },
+  { key:'adult',   name:'成年猫', min:340,  max:599,  scale:1.06, deco:'crown' },
+  { key:'legend',  name:'猫仙',   min:600,  max:99999,scale:1.12, deco:'halo'  }
+];
+function stageOf(exp){
+  for(let i=STAGES.length-1;i>=0;i--){ if(exp>=STAGES[i].min) return i; }
+  return 0;
+}
+/* 饥饿衰减：每小时掉多少饱食度 */
+const HUNGER_DECAY_PER_HOUR = 4.5;
+const FEED_COST = 1;        // 每次投喂消耗猫粮
+const EXP_PER_FEED = 10;    // 每次投喂获得经验
+const BOND_PER_PET = 1;     // 每次撸猫亲密度
+const MEAL_FULL = 100;
+
+/* ---------- 学习类任务连击加成 ---------- */
+/* 学习类任务连续多天完成，额外奖励猫粮：连续2天+1 / 3~4天+2 / 5天及以上+3 */
+const COMBO_CATS = ['学习'];
+function isComboTask(t){ return COMBO_CATS.includes(t.cat); }
+function comboBonus(n){
+  if(n >= 5) return 3;
+  if(n >= 3) return 2;
+  if(n >= 2) return 1;
+  return 0;
+}
+
+/* ---------- 默认任务 ---------- */
+const DEFAULT_TASKS = [
+  { id:'t1', emoji:'🔤', name:'和妈妈一起英语学习', reward:3, cat:'学习' },
+  { id:'t2', emoji:'📖', name:'和爸爸一起读绘本',   reward:2, cat:'学习' },
+  { id:'t3', emoji:'🧮', name:'完成数学游戏',       reward:2, cat:'学习' },
+  { id:'t4', emoji:'🈶', name:'认字',               reward:2, cat:'学习' },
+  { id:'t5', emoji:'🧸', name:'收拾玩具',           reward:2, cat:'家务' },
+  { id:'t6', emoji:'🍽️', name:'摆碗筷',             reward:1, cat:'家务' },
+  { id:'t7', emoji:'🧽', name:'擦桌子',             reward:1, cat:'家务' },
+  { id:'t8', emoji:'🫧', name:'洗碗',               reward:1, cat:'家务' },
+  { id:'t9', emoji:'🦷', name:'自己刷牙',           reward:1, cat:'习惯' },
+  { id:'t10',emoji:'🏃', name:'户外运动',           reward:2, cat:'运动' },
+  { id:'t11',emoji:'🌙', name:'早睡',               reward:2, cat:'习惯' }
+];
+
+const LS_KEY = 'purpleCatPet.v1';
+const fmtDate = (d) => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const todayStr = () => fmtDate(new Date());
+const yestStr = () => fmtDate(new Date(Date.now()-86400000));
+
+/* ---------- 默认存档 ---------- */
+function defaultState(){
+  return {
+    name:'喵紫',
+    food:5,
+    exp:0,
+    meal:MEAL_FULL,          // 饱食度
+    bond:0,                  // 亲密度
+    lastTick:Date.now(),
+    tasks:DEFAULT_TASKS.map(t=>({...t})),
+    doneMap:{},              // { '2026-10-09': ['t1','t2'] }
+    streak:0,
+    streakDate:'',
+    taskStreak:{},           // { taskId: { n:连续天数, d:'最后完成日期' } }
+    totalCheckins:0,
+    totalFeeds:0,
+    logs:[],                 // 最近记录
+    sound:true,
+    soundVol:0.7
+  };
+}
+
+let S = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return defaultState();
+    const d = JSON.parse(raw);
+    const base = defaultState();
+    const merged = {...base, ...d};
+    if(!Array.isArray(merged.tasks) || !merged.tasks.length) merged.tasks = base.tasks;
+    if(!merged.doneMap || typeof merged.doneMap!=='object') merged.doneMap = {};
+    if(!merged.taskStreak || typeof merged.taskStreak!=='object') merged.taskStreak = {};
+    if(!Array.isArray(merged.logs)) merged.logs = [];
+    return merged;
+  }catch(e){ return defaultState(); }
+}
+function save(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){}
+}
+
+/* ---------- 时间推进：饱食度衰减 & 连续打卡中断 ---------- */
+function applyTimePass(){
+  const now = Date.now();
+  let last = S.lastTick || now;
+  const hours = Math.max(0, (now - last)/3600000);
+  if(hours > 0.0016){ // 超过约6秒才计算，避免频繁
+    S.meal = Math.max(0, S.meal - hours*HUNGER_DECAY_PER_HOUR);
+  }
+  S.lastTick = now;
+  // 连续打卡中断判定（不是今天也不是昨天 → 清零）
+  if(S.streakDate){
+    const t = todayStr(), yStr = yestStr();
+    if(S.streakDate!==t && S.streakDate!==yStr) S.streak=0;
+  }
+  // 学习任务连击中断判定（不是今天也不是昨天 → 重置为 0）
+  const t = todayStr(), yStr = yestStr();
+  Object.keys(S.taskStreak||{}).forEach(id=>{
+    const r = S.taskStreak[id];
+    if(r && r.d!==t && r.d!==yStr) r.n = 0;
+  });
+}
+function todayDone(){ return S.doneMap[todayStr()] || []; }
+
+/* =========================================================
+   仿真猫叫音效引擎（Web Audio 合成，无需任何音频文件）
+   基于真实猫叫的声学特征：滑音(meow 的共振峰走向)、颤音(vibrato)、
+   气声噪声、咕噜声(约 25Hz 低频脉冲调制)
+   ========================================================= */
+let actx=null;
+function ac(){
+  if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)();
+  try{ if(actx.state==='suspended' && actx.resume) actx.resume(); }catch(e){}
+  return actx;
+}
+function volScale(){ return (S.soundVol==null?0.7:S.soundVol); }
+function soundOn(){ return S.sound !== false; }
+
+let noiseBuf=null;
+function getNoise(){
+  const c=ac();
+  if(!noiseBuf || noiseBuf.sampleRate!==c.sampleRate){
+    const len = c.sampleRate*2;
+    noiseBuf = c.createBuffer(1, len, c.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for(let i=0;i<len;i++) d[i] = Math.random()*2-1;
+  }
+  return noiseBuf;
+}
+
+/* 合成一段猫叫（软萌可爱版）
+   音色设计：基频偏高(稚嫩) + 谐波柔化(去锯齿感) + 共振峰圆润(去粗糙) + 可爱上扬尾音 */
+function meow(opts={}){
+  if(!soundOn()) return;
+  try{
+    const c = ac(), t = c.currentTime;
+    const o = Object.assign({ f0:720, f1:1050, f2:600, dur:0.5, vib:16, growl:false, bright:1.15, vol:0.30, delay:0, tilt:null, chirp:0 }, opts);
+    const v = o.vol * volScale();
+    const t0 = t + o.delay;
+
+    // 基频振荡器：用 triangle 打底 + 柔和谐波，比 sawtooth 温润许多
+    const osc = c.createOscillator();
+    osc.type = 'triangle';
+    // 频率包络：起→上扬→回落（更明显的上扬让声音显得雀跃可爱）
+    osc.frequency.setValueAtTime(o.f0, t0);
+    osc.frequency.exponentialRampToValueAtTime(o.f1, t0 + o.dur*0.34);
+    osc.frequency.exponentialRampToValueAtTime(o.f2, t0 + o.dur*0.90);
+    // 可选：尾音上扬（撒娇"喵↑"）
+    if(o.tilt){
+      osc.frequency.exponentialRampToValueAtTime(o.tilt, t0 + o.dur*0.98);
+    }
+
+    // 一层低八度正弦增加"奶气"厚度，柔和不刺耳
+    const sub = c.createOscillator();
+    sub.type='sine';
+    sub.frequency.setValueAtTime(o.f0*0.5, t0);
+    sub.frequency.exponentialRampToValueAtTime(o.f1*0.5, t0 + o.dur*0.34);
+    sub.frequency.exponentialRampToValueAtTime(o.f2*0.5, t0 + o.dur*0.90);
+    const subG = c.createGain(); subG.gain.value = 0.35;
+
+    // 颤音（更柔和的稚嫩抖动）
+    const lfo = c.createOscillator(), lfoG = c.createGain();
+    lfo.type='sine'; lfo.frequency.value = 18 + Math.random()*6;
+    lfoG.gain.setValueAtTime(0, t0);
+    lfoG.gain.linearRampToValueAtTime(o.vib, t0 + o.dur*0.25);
+    lfoG.gain.linearRampToValueAtTime(o.vib*0.35, t0 + o.dur*0.9);
+    lfo.connect(lfoG); lfoG.connect(osc.frequency);
+    lfo.start(t0); lfo.stop(t0 + o.dur + 0.05);
+
+    // 共振峰滤波：Q 值调低，去掉粗糙"沙"感，声音更圆润
+    const bp1 = c.createBiquadFilter(); bp1.type='bandpass';
+    bp1.frequency.setValueAtTime(1000*o.bright, t0);
+    bp1.frequency.linearRampToValueAtTime(1450*o.bright, t0 + o.dur*0.35);
+    bp1.frequency.linearRampToValueAtTime(850*o.bright, t0 + o.dur*0.9);
+    bp1.Q.value = 2.3;
+    const bp2 = c.createBiquadFilter(); bp2.type='bandpass';
+    bp2.frequency.value = 2900*o.bright; bp2.Q.value = 1.6;
+    const bp3 = c.createBiquadFilter(); bp3.type='bandpass';
+    bp3.frequency.value = 4600*o.bright; bp3.Q.value = 1.3;
+    const lp = c.createBiquadFilter(); lp.type='lowpass';
+    lp.frequency.value = 5200*o.bright; lp.Q.value = 0.55;
+
+    // 主增益包络：起音柔和（不突兀），衰减自然
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(v, t0 + o.dur*0.16);
+    g.gain.setValueAtTime(v, t0 + o.dur*0.55);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + o.dur);
+
+    const mix = c.createGain(); mix.gain.value = 0.6;
+    osc.connect(bp1); osc.connect(bp2); osc.connect(bp3); osc.connect(lp);
+    sub.connect(subG); subG.connect(g);
+    bp1.connect(g); bp2.connect(g); bp3.connect(g); lp.connect(g);
+    g.connect(mix); mix.connect(c.destination);
+    osc.start(t0); osc.stop(t0 + o.dur + 0.02);
+    sub.start(t0); sub.stop(t0 + o.dur + 0.02);
+
+    // 高频"啾"点缀（某些可爱叫声里的小上扬）
+    if(o.chirp){
+      const co = c.createOscillator(), cg = c.createGain();
+      co.type='sine';
+      co.frequency.setValueAtTime(o.chirp, t0 + o.dur*0.1);
+      co.frequency.exponentialRampToValueAtTime(o.chirp*1.7, t0 + o.dur*0.32);
+      cg.gain.setValueAtTime(0.0001, t0 + o.dur*0.1);
+      cg.gain.linearRampToValueAtTime(v*0.22, t0 + o.dur*0.16);
+      cg.gain.exponentialRampToValueAtTime(0.0001, t0 + o.dur*0.5);
+      co.connect(cg); cg.connect(mix);
+      co.start(t0 + o.dur*0.1); co.stop(t0 + o.dur*0.55);
+    }
+
+    if(o.growl){
+      const gn = c.createBufferSource(); gn.buffer = getNoise(); gn.loop = true;
+      const gf = c.createBiquadFilter(); gf.type='lowpass'; gf.frequency.value=200; gf.Q.value=1;
+      const gg = c.createGain();
+      const ggT = t0 + o.dur*0.15, ggDur = o.dur*0.85;
+      gg.gain.setValueAtTime(0.0001, ggT);
+      gg.gain.linearRampToValueAtTime(v*0.35, ggT + 0.06);
+      gg.gain.exponentialRampToValueAtTime(0.0001, ggT + ggDur);
+      const glfo = c.createOscillator(); glfo.type='sine'; glfo.frequency.value=28;
+      const glfoG = c.createGain(); glfoG.gain.value = v*0.35;
+      glfo.connect(glfoG); glfoG.connect(gg.gain);
+      glfo.start(ggT); glfo.stop(ggT + ggDur + 0.05);
+      gn.connect(gf); gf.connect(gg); gg.connect(mix);
+      gn.start(ggT); gn.stop(ggT + ggDur + 0.05);
+    }
+  }catch(e){}
+}
+
+/* 持续呼噜声（睡觉时） */
+let purrNodes=null;
+function purrStart(){
+  if(!soundOn() || purrNodes) return;
+  try{
+    const c=ac(), v=volScale();
+    const src=c.createBufferSource(); src.buffer=getNoise(); src.loop=true;
+    const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=320; lp.Q.value=0.9;
+    const g=c.createGain(); g.gain.value = 0.0001;
+    g.gain.linearRampToValueAtTime(v*0.16, c.currentTime+0.5);
+    const lfo=c.createOscillator(), lg=c.createGain();
+    lfo.type='sine'; lfo.frequency.value=30; lg.gain.value=v*0.11;
+    lfo.connect(lg); lg.connect(g.gain);
+    lfo.start(); src.connect(lp); lp.connect(g); g.connect(c.destination);
+    src.start();
+    purrNodes={src,g,lfo};
+  }catch(e){}
+}
+function purrStop(){
+  if(!purrNodes) return;
+  try{
+    const c=ac(), now=c.currentTime;
+    purrNodes.g.gain.cancelScheduledValues(now);
+    purrNodes.g.gain.setValueAtTime(purrNodes.g.gain.value, now);
+    purrNodes.g.gain.exponentialRampToValueAtTime(0.0001, now+0.3);
+    purrNodes.src.stop(now+0.35); purrNodes.lfo.stop(now+0.35);
+  }catch(e){}
+  purrNodes=null;
+}
+
+/* ---- 场景音效（软萌可爱版） ---- */
+// 打招呼"喵~"：音调偏高、带一点上扬尾音，像小猫撒娇
+const sfxMeowHi     = ()=>meow({f0:820,f1:1120,f2:720,dur:0.42,vib:14,bright:1.25,vol:0.28,tilt:900,chirp:1400});
+// 撒娇"喵!"：短促高音，尖细可爱
+const sfxMeowCute   = ()=>meow({f0:980,f1:1280,f2:920,dur:0.26,vib:12,bright:1.35,vol:0.26,tilt:1180,chirp:1700});
+// 满足"喵呜~"：绵长上扬 + 温柔咕噜
+const sfxMeowHappy  = ()=>meow({f0:780,f1:1080,f2:820,dur:0.78,vib:22,bright:1.3,vol:0.30,growl:true,tilt:1000});
+// 饿了的可怜"喵——"：软软的下行，尾音发虚
+const sfxMeowHungry = ()=>{ meow({f0:760,f1:680,f2:420,dur:0.72,vib:10,bright:1.1,vol:0.27,chirp:1200});
+                            setTimeout(()=>meow({f0:700,f1:620,f2:380,dur:0.55,vib:9,bright:1.05,vol:0.19}),360); };
+// 欢呼"喵喵喵"：三连上行的雀跃感，越来越高
+const sfxMeowCheer  = ()=>{ meow({f0:880,f1:1150,f2:1000,dur:0.22,vib:14,bright:1.3,vol:0.26,tilt:1080,chirp:1600});
+                            setTimeout(()=>meow({f0:1000,f1:1280,f2:1120,dur:0.22,vib:14,bright:1.35,vol:0.27,tilt:1200,chirp:1800}),170);
+                            setTimeout(()=>meow({f0:1120,f1:1450,f2:1280,dur:0.32,vib:18,bright:1.45,vol:0.29,tilt:1350,chirp:2000,growl:true}),340); };
+// 华丽升级"喵—喵—喵呜!"：三段上行，最后带咕噜和啾音
+const sfxMeowLevel  = ()=>{ meow({f0:820,f1:1050,f2:960,dur:0.34,vib:16,bright:1.25,vol:0.27,tilt:1000,chirp:1500});
+                            setTimeout(()=>meow({f0:1000,f1:1300,f2:1180,dur:0.34,vib:20,bright:1.35,vol:0.28,tilt:1240,chirp:1800}),280);
+                            setTimeout(()=>meow({f0:1240,f1:1600,f2:1400,dur:0.62,vib:26,bright:1.45,vol:0.30,growl:true,tilt:1500,chirp:2200}),560); };
+// 连击奖励"喵♪"：清脆高音 + 咕噜
+const sfxMeowCombo  = ()=>meow({f0:1080,f1:1380,f2:1180,dur:0.32,vib:18,bright:1.4,vol:0.28,growl:true,tilt:1280,chirp:1900});
+// 困倦的睡觉喵：低低的、软软的
+const sfxSleep      = ()=>meow({f0:680,f1:600,f2:440,dur:0.62,vib:9,bright:0.95,vol:0.24});
+// 醒来"喵~"：轻快上扬
+const sfxWake       = ()=>meow({f0:760,f1:1020,f2:840,dur:0.4,vib:14,bright:1.2,vol:0.27,tilt:900,chirp:1400});
+function sfxMeowRandom(){
+  const r = Math.random();
+  if(r<0.5) sfxMeowCute();
+  else if(r<0.8) sfxMeowHi();
+  else sfxMeowHappy();
+}
+
+/* 兼容旧调用名 */
+const sfxTask  = sfxMeowCheer;
+const sfxFeed  = sfxMeowHappy;
+const sfxPet   = sfxMeowCute;
+const sfxLevel = sfxMeowLevel;
+
+/* ---------- 小猫 SVG ---------- */
+/* mood: happy | eat | hungry | sleep | levelup */
+function catSVG(mood, stageIdx){
+  const stage = STAGES[stageIdx] || STAGES[0];
+  const P = {           // 紫色调色板
+    body:'#9B6BD6', bodyDark:'#7C4DBF', bodyLight:'#B98CF0',
+    stripe:'#6E3FB3', ear:'#C9A9EE', cheek:'#F49AC1',
+    belly:'#F0E4FF', eye:'#33234D', nose:'#E0559B', white:'#FFFFFF'
+  };
+
+  // 眼睛/嘴/其他按心情
+  let eyes, mouth, extra='', blush=0, tears='', zzz='', sparkle='';
+  const blink = mood!=='sleep';
+
+  if(mood==='sleep'){
+    eyes = `
+      <path d="M96 132 q13 10 26 0" stroke="${P.eye}" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+      <path d="M176 132 q13 10 26 0" stroke="${P.eye}" stroke-width="5.5" fill="none" stroke-linecap="round"/>`;
+    mouth = `<path d="M145 160 q9 -6 18 0" stroke="${P.eye}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+    zzz = `
+      <g fill="${P.bodyDark}" opacity=".85" font-weight="800" font-family="sans-serif">
+        <text x="214" y="96" font-size="20" class="z1">z</text>
+        <text x="234" y="70" font-size="27" class="z2">Z</text>
+        <text x="258" y="42" font-size="34" class="z3">Z</text>
+      </g>`;
+  } else if(mood==='eat'){
+    eyes = `
+      <ellipse cx="109" cy="134" rx="12" ry="13.5" fill="${P.eye}"/>
+      <ellipse cx="189" cy="134" rx="12" ry="13.5" fill="${P.eye}"/>
+      <circle cx="113" cy="129" r="4.6" fill="#fff"/>
+      <circle cx="193" cy="129" r="4.6" fill="#fff"/>`;
+    mouth = `
+      <path d="M136 158 q13 16 26 0" stroke="${P.eye}" stroke-width="4.5" fill="${P.nose}" stroke-linejoin="round"/>
+      <ellipse cx="149" cy="163" rx="6" ry="4" fill="${P.nose}" opacity=".5"/>`;
+    blush = 1;
+  } else if(mood==='hungry'){
+    eyes = `
+      <ellipse cx="109" cy="136" rx="12" ry="12" fill="${P.eye}"/>
+      <ellipse cx="189" cy="136" rx="12" ry="12" fill="${P.eye}"/>
+      <circle cx="112" cy="131" r="4.2" fill="#fff"/>
+      <circle cx="192" cy="131" r="4.2" fill="#fff"/>
+      <path d="M92 112 q14 -7 28 3" stroke="${P.bodyDark}" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+      <path d="M178 115 q14 -10 28 -3" stroke="${P.bodyDark}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`;
+    mouth = `<path d="M136 164 q13 -9 26 0" stroke="${P.eye}" stroke-width="4.5" fill="none" stroke-linecap="round" transform="rotate(180 149 160)"/>`;
+    tears = `<ellipse cx="99" cy="150" rx="3.4" ry="5" fill="#7FD4FF" opacity=".85"/>`;
+  } else if(mood==='levelup'){
+    eyes = `
+      <path d="M97 136 l6.5 -8 l6.5 8 l6.5 -8 l6.5 8" stroke="${P.eye}" stroke-width="4.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M177 136 l6.5 -8 l6.5 8 l6.5 -8 l6.5 8" stroke="${P.eye}" stroke-width="4.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>`;
+    mouth = `<path d="M134 153 q15 20 30 0 q-15 6 -30 0 z" fill="${P.nose}"/>`;
+    blush = 1;
+    sparkle = `
+      <g fill="${'#FFD86B'}" opacity=".95">
+        <path d="M60 78 l3.6 9 l9 3.6 l-9 3.6 l-3.6 9 l-3.6 -9 l-9 -3.6 l9 -3.6z"/>
+        <path d="M250 96 l3 7.6 l7.6 3 l-7.6 3 l-3 7.6 l-3 -7.6 l-7.6 -3 l7.6 -3z"/>
+        <path d="M232 168 l2.6 6.4 l6.4 2.6 l-6.4 2.6 l-2.6 6.4 l-2.6 -6.4 l-6.4 -2.6 l6.4 -2.6z"/>
+        <path d="M74 176 l2.4 6 l6 2.4 l-6 2.4 l-2.4 6 l-2.4 -6 l-6 -2.4 l6 -2.4z"/>
+      </g>`;
+  } else { // happy
+    eyes = `
+      <ellipse cx="109" cy="133" rx="12.5" ry="14" fill="${P.eye}"/>
+      <ellipse cx="189" cy="133" rx="12.5" ry="14" fill="${P.eye}"/>
+      <circle cx="113.4" cy="127.5" r="5" fill="#fff"/>
+      <circle cx="193.4" cy="127.5" r="5" fill="#fff"/>
+      <circle cx="105" cy="139" r="2.4" fill="#fff" opacity=".7"/>
+      <circle cx="185" cy="139" r="2.4" fill="#fff" opacity=".7"/>`;
+    mouth = `
+      <path d="M135 156 q14 17 28 0" stroke="${P.eye}" stroke-width="4.6" fill="none" stroke-linecap="round"/>
+      <path d="M144 160 q5 5 10 0" stroke="${P.nose}" stroke-width="3.4" fill="none" stroke-linecap="round"/>`;
+    blush = 1;
+  }
+
+  // 成长装饰
+  let deco='';
+  if(stage.deco==='bell'){
+    deco = `<circle cx="149" cy="188" r="7.5" fill="#FFD166" stroke="#E0A800" stroke-width="2"/><path d="M149 181 v14" stroke="#E0A800" stroke-width="1.4"/>`;
+  } else if(stage.deco==='bow'){
+    deco = `
+      <g transform="translate(214,116) rotate(18)">
+        <path d="M0 0 L-15 -10 L-15 10 Z" fill="${P.pink}" stroke="#D9749F" stroke-width="1.6"/>
+        <path d="M0 0 L15 -10 L15 10 Z" fill="${P.pink}" stroke="#D9749F" stroke-width="1.6"/>
+        <circle cx="0" cy="0" r="4" fill="#E0559B"/>
+      </g>`;
+  } else if(stage.deco==='crown'){
+    deco = `
+      <g transform="translate(149,52)">
+        <path d="M-24 8 L-24 -8 L-12 0 L0 -13 L12 0 L24 -8 L24 8 Z" fill="#FFD166" stroke="#E0A800" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="0" cy="-13" r="3.4" fill="#FF8FB8"/>
+      </g>`;
+  } else if(stage.deco==='halo'){
+    deco = `
+      <ellipse cx="149" cy="40" rx="34" ry="9" fill="none" stroke="#FFD86B" stroke-width="5" opacity=".9"/>
+      <ellipse cx="149" cy="40" rx="34" ry="9" fill="none" stroke="#FFF3C4" stroke-width="2"/>
+      <g transform="translate(149,52)">
+        <path d="M-26 9 L-26 -9 L-13 0 L0 -15 L13 0 L26 -9 L26 9 Z" fill="#FFC94D" stroke="#DFA200" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="0" cy="-15" r="3.6" fill="#FF6B9D"/>
+      </g>`;
+  }
+
+  return `
+<svg id="catSvgInner" viewBox="0 0 298 300" xmlns="http://www.w3.org/2000/svg" aria-label="紫色小猫">
+  <defs>
+    <radialGradient id="bodyGrad" cx="42%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#C9A9EE"/>
+      <stop offset="52%" stop-color="${P.body}"/>
+      <stop offset="100%" stop-color="${P.bodyDark}"/>
+    </radialGradient>
+    <radialGradient id="earGrad" cx="50%" cy="20%" r="80%">
+      <stop offset="0%" stop-color="#DCC6F6"/>
+      <stop offset="100%" stop-color="#A874E0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 影子 -->
+  <ellipse cx="149" cy="272" rx="82" ry="14" fill="#4A2A78" opacity=".18"/>
+
+  ${sparkle}
+
+  <!-- 尾巴 -->
+  <g transform="rotate(-14 230 210)">
+    <path d="M226 232 q52 -6 46 -54" stroke="${P.bodyDark}" stroke-width="17" fill="none" stroke-linecap="round"/>
+    <path d="M226 232 q52 -6 46 -54" stroke="${P.body}" stroke-width="9" fill="none" stroke-linecap="round" opacity=".55"/>
+  </g>
+
+  <!-- 身体 -->
+  <path d="M149 128 C104 128 82 176 86 216 C90 254 118 266 149 266 C180 266 208 254 212 216 C216 176 194 128 149 128 Z"
+        fill="url(#bodyGrad)"/>
+  <!-- 肚皮 -->
+  <ellipse cx="149" cy="222" rx="44" ry="38" fill="${P.belly}" opacity=".72"/>
+  <!-- 前爪 -->
+  <ellipse cx="112" cy="256" rx="17" ry="12" fill="${P.bodyLight}"/>
+  <ellipse cx="186" cy="256" rx="17" ry="12" fill="${P.bodyLight}"/>
+  <path d="M106 254 v-4 M112 254 v-5 M118 254 v-4" stroke="${P.bodyDark}" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+  <path d="M180 254 v-4 M186 254 v-5 M192 254 v-4" stroke="${P.bodyDark}" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+
+  <!-- 耳朵 -->
+  <path d="M96 122 L82 66 L132 96 Z" fill="url(#earGrad)"/>
+  <path d="M202 122 L216 66 L166 96 Z" fill="url(#earGrad)"/>
+  <path d="M100 114 L91 80 L124 98 Z" fill="${P.pink}" opacity=".72"/>
+  <path d="M198 114 L207 80 L174 98 Z" fill="${P.pink}" opacity=".72"/>
+
+  <!-- 头 -->
+  <ellipse cx="149" cy="140" rx="72" ry="64" fill="url(#bodyGrad)"/>
+  <!-- 额头花纹 -->
+  <path d="M132 84 q-3 14 -12 20 M149 80 q0 14 0 20 M166 84 q3 14 12 20" stroke="${P.stripe}" stroke-width="5" fill="none" stroke-linecap="round" opacity=".55"/>
+
+  ${deco}
+
+  <!-- 腮红 -->
+  ${blush? `
+    <ellipse cx="94" cy="154" rx="14" ry="9" fill="${P.cheek}" opacity=".5"/>
+    <ellipse cx="204" cy="154" rx="14" ry="9" fill="${P.cheek}" opacity=".5"/>` : ''}
+
+  <!-- 眼睛 -->
+  ${eyes}
+  ${tears}
+
+  <!-- 鼻子 -->
+  <path d="M143 150 q6 -6 12 0 q-6 8 -12 0 z" fill="${P.nose}"/>
+  <!-- 嘴 -->
+  ${mouth}
+
+  <!-- 胡须 -->
+  <path d="M84 150 q-22 -6 -34 -12 M84 158 q-23 0 -36 3" stroke="${P.bodyDark}" stroke-width="2.6" fill="none" stroke-linecap="round" opacity=".45"/>
+  <path d="M214 150 q22 -6 34 -12 M214 158 q23 0 36 3" stroke="${P.bodyDark}" stroke-width="2.6" fill="none" stroke-linecap="round" opacity=".45"/>
+
+  ${zzz}
+</svg>`;
+}
+
+/* 眨眼动画：给 #catSvg 注入 blink 类 */
+function attachBlink(mood){
+  if(mood==='sleep') return;
+  const svg = document.getElementById('catSvg');
+  if(!svg) return;
+  // 用 CSS 缩放眼睛实现眨眼（仅 happy 静态眼）
+  if(mood!=='happy') return;
+  const eyes = svg.querySelectorAll('ellipse[fill="#33234D"]');
+  let t;
+  const loop = ()=>{
+    t = setTimeout(()=>{
+      eyes.forEach(e=>{
+        const cur = e.getAttribute('ry');
+        e.setAttribute('ry', (parseFloat(cur)*0.12).toFixed(2));
+        setTimeout(()=> e.setAttribute('ry', cur), 130);
+      });
+      loop();
+    }, 2200 + Math.random()*2600);
+  };
+  loop();
+}
+
+/* ---------- 渲染 ---------- */
+let flashMood = null;      // 临时心情
+let flashTimer = null;
+function currentMood(){
+  if(flashMood) return flashMood;
+  if(S.meal <= 18) return 'hungry';
+  return 'happy';
+}
+function renderCat(){
+  const el = document.getElementById('catSvg');
+  const mood = currentMood();
+  const idx = stageOf(S.exp);
+  el.innerHTML = catSVG(mood, idx);
+  const inner = el.querySelector('svg');
+  if(inner){ inner.setAttribute('width','100%'); inner.setAttribute('height','100%'); }
+  el.classList.toggle('breathe', mood!=='sleep');
+  attachBlink(mood);
+}
+
+function showFlash(mood, dur=1400){
+  flashMood = mood;
+  renderCat();
+  clearTimeout(flashTimer);
+  flashTimer = setTimeout(()=>{ flashMood=null; renderCat(); }, dur);
+}
+
+function renderHUD(){
+  document.getElementById('petName').textContent = S.name || '喵紫';
+  const idx = stageOf(S.exp);
+  const st = STAGES[idx];
+  document.getElementById('lvlChip').textContent = 'Lv.' + (idx+1);
+  document.getElementById('stageTag').textContent = st.name;
+
+  // 经验条
+  const next = STAGES[idx+1];
+  const curBase = st.min;
+  const curMax = st.max;
+  let expPct;
+  if(!next){ expPct = 100; document.getElementById('expText').textContent = '满级 · 猫仙圆满'; }
+  else{
+    expPct = Math.max(0, Math.min(100, (S.exp - curBase)/(curMax - curBase + 1) * 100));
+    document.getElementById('expText').textContent = S.exp + ' / ' + (curMax+1);
+  }
+  const expBar = document.getElementById('expBar');
+  expBar.style.width = expPct.toFixed(1)+'%';
+  expBar.parentElement.classList.toggle('full', !next);
+
+  // 饱食度
+  const mealPct = Math.max(0, Math.min(100, S.meal));
+  document.getElementById('mealBar').style.width = mealPct.toFixed(0)+'%';
+  document.getElementById('mealText').textContent = Math.round(mealPct)+'%';
+  const mealBarEl = document.getElementById('mealBar');
+  mealBarEl.parentElement.classList.toggle('low', mealPct < 35);
+
+  // 亲密度
+  const bondPct = Math.min(100, S.bond % 100);
+  document.getElementById('bondBar').style.width = bondPct+'%';
+  document.getElementById('bondText').textContent = S.bond;
+
+  // 猫粮
+  document.getElementById('feedSub').textContent = '消耗 '+FEED_COST+' 猫粮';
+  document.getElementById('feedBtn').disabled = S.food < FEED_COST;
+
+  // 顶部统计
+  document.getElementById('statFood').textContent = S.food;
+  document.getElementById('statStreak').textContent = S.streak;
+  document.getElementById('statCheckin').textContent = S.totalCheckins;
+
+  // 心情提示
+  const tip = document.getElementById('moodTip');
+  if(S.meal <= 5){ tip.textContent = '小猫饿得没力气啦，快投喂吧 🥺'; tip.style.color='#FF6B6B'; }
+  else if(S.meal <= 18){ tip.textContent = '小猫肚子空空，有点想吃饭了…'; tip.style.color='#E0741A'; }
+  else if(S.meal <= 40){ tip.textContent = '小猫有点饿了，还能再玩会儿~'; tip.style.color='#B98A00'; }
+  else { tip.textContent = '小猫吃得饱饱的，正开心地摇尾巴 🐾'; tip.style.color='var(--ink-soft)'; }
+}
+
+/* ---------- 任务渲染 ---------- */
+function renderTasks(){
+  const containers = [document.getElementById('taskList'), document.getElementById('taskList2')];
+  const done = todayDone();
+  let html;
+  if(!S.tasks.length){
+    html = '<div class="empty">还没有任务，去「家长模式」添加吧</div>';
+  } else {
+    html = S.tasks.map(t=>{
+      const isDone = done.includes(t.id);
+      // 学习类任务：连击进度
+      let comboTag = '';
+      let rewardText = isDone ? '已完成' : '+'+t.reward+' 🐟';
+      if(isComboTask(t)){
+        const rec = S.taskStreak[t.id];
+        const n = (rec && (rec.d===todayStr()||rec.d===yestStr())) ? rec.n : 0;
+        const next = comboBonus(n+1);
+        if(isDone){
+          if(n>=2) comboTag = `<span class="combo-tag on">🔥 连击 ${n} 天</span>`;
+        } else {
+          if(n>=1) comboTag = `<span class="combo-tag on">🔥 已连续 ${n} 天</span>`;
+          if(next>0) comboTag += `<span class="combo-tag">达成再 +${next} 🎁</span>`;
+        }
+        if(!isDone && n>=1){ /* 奖励文案保持基础奖励，加成单独标 */ }
+      }
+      return `
+        <div class="task ${isDone?'done':''}">
+          <div class="emoji">${t.emoji||'⭐'}</div>
+          <div class="info">
+            <b>${esc(t.name)}</b>
+            <small>${esc(t.cat||'任务')} · 奖励 +${t.reward} 猫粮</small>
+            ${comboTag}
+          </div>
+          <div class="reward">${rewardText}</div>
+          <button class="go ${isDone?'done':''}" ${isDone?'disabled':''} data-task="${t.id}">${isDone?'✓':'打卡'}</button>
+        </div>`;
+    }).join('');
+  }
+  containers.forEach(c=>{ if(c) c.innerHTML = html; });
+}
+function esc(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function completeTask(id){
+  const t = S.tasks.find(x=>x.id===id);
+  if(!t) return;
+  const d = todayStr();
+  const list = S.doneMap[d] || (S.doneMap[d]=[]);
+  if(list.includes(id)) return;
+  list.push(id);
+
+  // 学习类任务连击天数（每个任务各自累计）
+  let comboN = 1, bonus = 0;
+  if(isComboTask(t)){
+    const rec = S.taskStreak[id];
+    if(rec && rec.d === d){ comboN = rec.n; }          // 今天已算过（理论不会）
+    else if(rec && rec.d === yestStr()){ comboN = rec.n + 1; }
+    else { comboN = 1; }
+    S.taskStreak[id] = { n:comboN, d:d };
+    bonus = comboBonus(comboN);
+  }
+
+  const total = t.reward + bonus;
+  S.food += total;
+  S.totalCheckins++;
+
+  // 连续打卡（整体）
+  if(S.streakDate===d) { /* 今天已记 */ }
+  else if(S.streakDate===yestStr()){ S.streak++; S.streakDate = d; }
+  else { S.streak = 1; S.streakDate = d; }
+
+  pushLog({ type:'task', emoji:t.emoji||'✅', title:'完成任务：'+t.name + (bonus?`（连击 ${comboN} 天）`:''),
+            amt:'+'+(t.reward+bonus), unit:'猫粮', sign:'plus' });
+  sfxTask();
+  if(bonus){
+    // 先显示基础奖励，再叠加连击加成飘字
+    floatText('+'+t.reward+' 猫粮 🐟', '#C9871B');
+    setTimeout(()=>{ sfxMeowCombo(); floatText('连击 '+comboN+' 天 +'+bonus+' 🎁', '#E0559B', 1400); }, 380);
+    save();
+    renderAll();
+    toast(`连击 ${comboN} 天！额外奖励 +${bonus} 猫粮 🎁`);
+  } else {
+    floatText('+'+t.reward+' 猫粮 🐟', '#C9871B');
+    save();
+    renderAll();
+    toast('太棒了！获得 '+t.reward+' 份猫粮 🐟');
+  }
+}
+
+/* ---------- 投喂 ---------- */
+function feed(){
+  if(S.food < FEED_COST){ toast('猫粮不够啦，先去完成任务吧~'); return; }
+  const beforeIdx = stageOf(S.exp);
+  S.food -= FEED_COST;
+  S.totalFeeds++;
+  S.meal = Math.min(MEAL_FULL, S.meal + 22);
+  S.exp += EXP_PER_FEED;
+
+  pushLog({ type:'feed', emoji:'🍚', title:'投喂了小猫', amt:'-'+FEED_COST, unit:'猫粮', sign:'minus' });
+
+  const afterIdx = stageOf(S.exp);
+  sfxFeed();
+  showFlash('eat', 1300);
+  equipCrumbs();
+  floatText('+'+EXP_PER_FEED+' 经验 ✨', '#7C4DBF');
+  if(S.meal >= MEAL_FULL*0.98) setTimeout(()=>floatText('吃饱啦 😻', '#E0559B', 900), 500);
+
+  save();
+  renderHUD();
+  updateTaskUI();
+  renderStats();
+
+  if(afterIdx > beforeIdx){
+    setTimeout(()=>{ levelUp(afterIdx); }, 1200);
+  }
+}
+
+/* ---------- 撸猫 ---------- */
+function petCat(){
+  S.bond += BOND_PER_PET;
+  sfxPet();
+  showFlash('happy', 900);
+  floatText('+1 亲密度 💜', '#E0559B');
+  if(S.bond % 10 === 0) setTimeout(()=>floatText('小猫更爱你啦 💕', '#E0559B', 1000), 400);
+  pushLog({ type:'bond', emoji:'🫶', title:'撸了撸小猫', amt:'+'+BOND_PER_PET, unit:'亲密度', sign:'plus' });
+  save();
+  renderHUD();
+  renderStats();
+}
+
+/* ---------- 睡觉 ---------- */
+let sleeping = false;
+function toggleSleep(){
+  sleeping = !sleeping;
+  if(sleeping){
+    sfxSleep();
+    flashMood='sleep'; renderCat();
+    purrStart();
+    document.getElementById('sleepBtn').querySelector('.label').textContent='叫醒';
+    toast('小猫睡着啦 💤（正在呼噜呼噜）');
+  } else {
+    purrStop();
+    sfxWake();
+    flashMood=null; renderCat();
+    document.getElementById('sleepBtn').querySelector('.label').textContent='睡觉';
+    toast('小猫醒啦，喵~');
+  }
+}
+
+/* ---------- 升级 ---------- */
+function levelUp(newIdx){
+  const st = STAGES[newIdx];
+  sfxLevel();
+  showFlash('levelup', 2200);
+  document.getElementById('levelModalEmoji').textContent = st.deco==='halo'?'👑':'🌟';
+  document.getElementById('levelModalTitle').textContent = '升级啦！';
+  document.getElementById('levelModalText').innerHTML =
+    `${esc(S.name)} 成长为「<b>${st.name}</b>」啦！<br>继续完成任务，陪它一起长大吧 🎉`;
+  document.getElementById('levelModal').classList.add('show');
+  pushLog({ type:'level', emoji:'🌟', title:'小猫升级为「'+st.name+'」', amt:'', unit:'', sign:'plus' });
+  floatText('升级！'+st.name+' 🌟', '#C9871B', 1400);
+  save();
+  renderHUD();
+  renderStats();
+}
+
+/* ---------- 飘字 / 碎屑 ---------- */
+function floatText(txt, color, dur){
+  const layer = document.getElementById('floatLayer');
+  const el = document.createElement('div');
+  el.className='floater'; el.textContent = txt;
+  el.style.color = color || '#fff';
+  if(dur) el.style.animationDuration = dur+'ms';
+  layer.appendChild(el);
+  setTimeout(()=>el.remove(), (dur||1150)+60);
+}
+function equipCrumbs(){
+  const layer = document.getElementById('floatLayer');
+  for(let i=0;i<7;i++){
+    const c=document.createElement('div');
+    c.className='crumbs';
+    c.textContent = ['🐟','✨','🐾','💜'][Math.floor(Math.random()*4)];
+    c.style.left = (38 + Math.random()*24)+'%';
+    c.style.top = '58%';
+    c.style.setProperty('--dx',(Math.random()*160-80)+'px');
+    c.style.animationDelay = (Math.random()*.35)+'s';
+    layer.appendChild(c);
+    setTimeout(()=>c.remove(), 1500);
+  }
+}
+
+/* ---------- 记录 ---------- */
+function pushLog(entry){
+  entry.t = Date.now();
+  S.logs.unshift(entry);
+  if(S.logs.length > 120) S.logs.length = 120;
+}
+function fmtTime(ts){
+  const d = new Date(ts);
+  const M=String(d.getMonth()+1).padStart(2,'0'), D=String(d.getDate()).padStart(2,'0');
+  const h=String(d.getHours()).padStart(2,'0'), m=String(d.getMinutes()).padStart(2,'0');
+  return `${M}-${D} ${h}:${m}`;
+}
+function renderStats(){
+  document.getElementById('stTotalCheckin').textContent = S.totalCheckins;
+  document.getElementById('stTotalFeed').textContent = S.totalFeeds;
+  document.getElementById('stStreak').textContent = S.streak;
+  document.getElementById('stBond').textContent = S.bond;
+  const box = document.getElementById('logList');
+  if(!S.logs.length){ box.innerHTML='<div class="empty">还没有记录哦，去完成任务或投喂小猫吧</div>'; return; }
+  box.innerHTML = S.logs.slice(0,60).map(l=>`
+    <div class="log">
+      <div class="ico">${l.emoji||'•'}</div>
+      <div class="txt">${esc(l.title)}<small>${fmtTime(l.t)}</small></div>
+      ${l.amt?`<div class="amt ${l.sign}">${l.amt} ${l.unit||''}</div>`:''}
+    </div>`).join('');
+}
+
+/* ---------- 家长模式 ---------- */
+function renderParent(){
+  document.getElementById('pmName').value = S.name || '';
+  const box = document.getElementById('pmTasks');
+  if(!S.tasks.length){ box.innerHTML='<div class="empty">暂无任务</div>'; return; }
+  box.innerHTML = S.tasks.map(t=>{
+    const cats = ['学习','家务','习惯','运动','自定义'];
+    const cur = cats.includes(t.cat) ? t.cat : '自定义';
+    return `
+    <div class="edit-row" data-id="${t.id}">
+      <input type="text" class="pm-emoji" value="${esc(t.emoji||'⭐')}" maxlength="2" style="width:46px;flex:0 0 auto;text-align:center;padding:9px 4px;">
+      <input type="text" class="pm-name" value="${esc(t.name)}" placeholder="任务名称">
+      <select class="pm-cat" title="分类（学习类有连击加成）" style="width:66px;flex:0 0 auto;border:1.5px solid #E4D7F7;border-radius:11px;padding:9px 2px;font-size:12.5px;font-family:inherit;background:#fff;color:var(--ink);text-align:center;">
+        ${cats.map(c=>`<option value="${c}" ${c===cur?'selected':''}>${c}</option>`).join('')}
+      </select>
+      <input type="number" class="pm-reward" value="${t.reward}" min="1" max="99">
+      <button class="del" data-del="${t.id}">✕</button>
+    </div>`;
+  }).join('');
+}
+function addTask(){
+  const n = S.tasks.length+1;
+  const id = 'c'+Date.now().toString(36);
+  S.tasks.push({ id, emoji:'⭐', name:'新任务'+n, reward:1, cat:'自定义' });
+  save(); renderParent(); renderTasks();
+  toast('已添加新任务，记得修改名称');
+}
+function saveParent(){
+  S.name = (document.getElementById('pmName').value||'').trim() || '喵紫';
+  document.querySelectorAll('#pmTasks .edit-row').forEach(row=>{
+    const id = row.dataset.id;
+    const t = S.tasks.find(x=>x.id===id); if(!t) return;
+    t.emoji = (row.querySelector('.pm-emoji').value||'⭐').trim().slice(0,2) || '⭐';
+    t.name  = (row.querySelector('.pm-name').value||'').trim() || '未命名任务';
+    const catSel = row.querySelector('.pm-cat');
+    if(catSel) t.cat = catSel.value || '自定义';
+    let r = parseInt(row.querySelector('.pm-reward').value,10);
+    t.reward = (isNaN(r)||r<1) ? 1 : Math.min(99, r);
+  });
+  save();
+  renderAll(); renderParent();
+  toast('已保存 ✓');
+}
+function delTask(id){
+  S.tasks = S.tasks.filter(t=>t.id!==id);
+  save(); renderParent(); renderTasks();
+  toast('已删除任务');
+}
+function resetAll(){
+  document.getElementById('confirmModal').classList.add('show');
+}
+function doReset(){
+  S = defaultState();
+  sleeping = false; flashMood=null;
+  save();
+  renderAll(); renderParent();
+  document.getElementById('confirmModal').classList.remove('show');
+  toast('已重置，小猫重新开始成长啦');
+}
+
+/* ---------- Tab 切换 ---------- */
+function switchTab(name){
+  document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('active', p.dataset.pane===name));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  if(name==='home'){ /* 保持 */ }
+  if(name==='tasks') renderTasks();
+  if(name==='log') renderStats();
+  if(name==='parent') renderParent();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ---------- 渲染总入口 ---------- */
+function renderAll(){
+  renderCat();
+  renderHUD();
+  updateTaskUI();
+  renderStats();
+}
+function updateTaskUI(){ renderTasks(); }
+
+/* ---------- Toast ---------- */
+let toastTimer=null;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 1900);
+}
+
+/* ---------- 事件绑定 ---------- */
+document.addEventListener('DOMContentLoaded', ()=>{
+  applyTimePass();
+  save();
+
+  // 按钮
+  document.getElementById('feedBtn').addEventListener('click', feed);
+  document.getElementById('petBtn').addEventListener('click', petCat);
+  document.getElementById('sleepBtn').addEventListener('click', toggleSleep);
+  document.getElementById('gearBtn').addEventListener('click', ()=>switchTab('parent'));
+  document.getElementById('pmAdd').addEventListener('click', addTask);
+  document.getElementById('pmSave').addEventListener('click', saveParent);
+  document.getElementById('pmReset').addEventListener('click', resetAll);
+  document.getElementById('resetConfirm').addEventListener('click', doReset);
+  document.getElementById('resetCancel').addEventListener('click', ()=>document.getElementById('confirmModal').classList.remove('show'));
+  document.getElementById('levelOk').addEventListener('click', ()=>document.getElementById('levelModal').classList.remove('show'));
+  document.getElementById('soundBtn').addEventListener('click', function(){
+    S.sound = !S.sound; save();
+    this.textContent = S.sound ? '🔊' : '🔇';
+    document.getElementById('volIcon').textContent = S.sound ? '🔊' : '🔇';
+    if(!S.sound) purrStop();
+    else sfxMeowCute();
+    toast(S.sound?'已开启猫叫':'已关闭猫叫');
+  });
+
+  // 音量滑块
+  const vs = document.getElementById('volSlider');
+  vs.value = Math.round((S.soundVol==null?0.7:S.soundVol)*100);
+  document.getElementById('volVal').textContent = vs.value + '%';
+  vs.addEventListener('input', ()=>{
+    S.soundVol = vs.value/100;
+    document.getElementById('volVal').textContent = vs.value + '%';
+    document.getElementById('volIcon').textContent = vs.value==0 ? '🔇' : (vs.value<40?'🔉':'🔊');
+    save();
+  });
+  vs.addEventListener('change', ()=>{ if(S.soundVol>0) sfxMeowCute(); });
+
+  // 点猫互动
+  document.getElementById('catWrap').addEventListener('click', ()=>{
+    const hint = document.getElementById('tapHint');
+    if(hint) hint.style.display='none';
+    if(sleeping){ toast('小猫在睡觉，嘘~ 🤫'); return; }
+    sfxMeowRandom();
+    petCat();
+    showFlash('happy', 800);
+  });
+
+  // 任务打卡（事件委托）
+  document.getElementById('taskList').addEventListener('click', e=>{
+    const btn = e.target.closest('[data-task]');
+    if(btn) completeTask(btn.dataset.task);
+  });
+  document.getElementById('taskList2').addEventListener('click', e=>{
+    const btn = e.target.closest('[data-task]');
+    if(btn) completeTask(btn.dataset.task);
+  });
+  // 删除任务
+  document.getElementById('pmTasks').addEventListener('click', e=>{
+    const b = e.target.closest('[data-del]');
+    if(b) delTask(b.dataset.del);
+  });
+
+  // 底部导航
+  document.querySelectorAll('nav button').forEach(b=>{
+    b.addEventListener('click', ()=>switchTab(b.dataset.tab));
+  });
+
+  // 初始化音效图标
+  document.getElementById('soundBtn').textContent = S.sound ? '🔊' : '🔇';
+
+  renderAll();
+  renderParent();
+
+  // 定期推进饱食度（每分钟）
+  setInterval(()=>{
+    applyTimePass(); save(); renderHUD(); renderCat();
+  }, 60000);
+
+  // 随机主动叫（每 45~120 秒，睡觉时不叫）
+  (function scheduleIdleMeow(){
+    const next = 45000 + Math.random()*75000;
+    setTimeout(()=>{
+      if(!sleeping && !document.hidden) sfxMeowRandom();
+      scheduleIdleMeow();
+    }, next);
+  })();
+
+  // 饿了会主动叫（每 3 分钟检查一次，饱食度低于 25 时叫）
+  setInterval(()=>{
+    if(!sleeping && S.meal < 25 && S.meal > 0) sfxMeowHungry();
+  }, 180000);
+
+  // 首次交互解锁音频（浏览器策略要求）
+  const unlock = ()=>{
+    try{ ac(); }catch(e){}
+    document.removeEventListener('touchstart', unlock);
+    document.removeEventListener('click', unlock);
+  };
+  document.addEventListener('touchstart', unlock, {once:true});
+  document.addEventListener('click', unlock, {once:true});
+
+  // 离开页面时保存
+  window.addEventListener('beforeunload', save);
+  document.addEventListener('visibilitychange', ()=>{ if(document.hidden) save(); else { applyTimePass(); renderAll(); } });
+});
+</script>
+</body>
+</html>
