@@ -480,22 +480,54 @@
    纯前端 / localStorage 持久化 / 无依赖
    ========================================================= */
 
-/* ---------- 成长阶段 ---------- */
-const STAGES = [
-  { key:'baby',    name:'幼猫',   min:0,    max:59,   scale:.82, deco:'none'  },
-  { key:'kit',     name:'小猫',   min:60,   max:169,  scale:.90, deco:'bell'  },
-  { key:'teen',    name:'少年猫', min:170,  max:339,  scale:.98, deco:'bow'   },
-  { key:'adult',   name:'成年猫', min:340,  max:599,  scale:1.06, deco:'crown' },
-  { key:'legend',  name:'猫仙',   min:600,  max:99999,scale:1.12, deco:'halo'  }
+/* ---------- 成长等级（30 级，均匀难度） ---------- */
+/* 每级固定 100 经验，每次投喂 +10 经验 → 每级约需投喂 10 次 */
+const EXP_PER_LEVEL = 100;
+const MAX_LEVEL = 30;
+
+/* 等级对应的称号与外观（每 5 级提升一个外观档次） */
+const STAGE_DEFS = [
+  { key:'baby',   name:'幼猫',   scale:.78, deco:'none'  },
+  { key:'kit',    name:'小猫',   scale:.86, deco:'bell'  },
+  { key:'teen',   name:'少年猫', scale:.94, deco:'bow'   },
+  { key:'adult',  name:'成年猫', scale:1.02, deco:'crown' },
+  { key:'legend', name:'猫仙',   scale:1.10, deco:'halo'  }
 ];
-function stageOf(exp){
-  for(let i=STAGES.length-1;i>=0;i--){ if(exp>=STAGES[i].min) return i; }
-  return 0;
+/* 30 级的趣味称号，每 3 级一档，让孩子有新鲜感 */
+const RANK_NAMES = [
+  '初生奶喵','摇尾小喵','好奇喵',
+  '灵巧小猫','活泼小猫','机敏小猫',
+  '蹦跳少年','聪明少年','灵猫少年',
+  '优雅青猫','俏皮青猫','夜行青猫',
+  '威风成猫','矫健成猫','守护成猫',
+  '银须长老','月影长老','星眸长老',
+  '紫晶灵猫','云游灵猫','风语灵猫',
+  '踏月之猫','流光之猫','幻梦之猫',
+  '紫霄仙喵','九尾仙喵','月华仙喵',
+  '星辰猫神','虚空猫神','喵之至尊'
+];
+
+/* 计算某一级的经验区间 [起始, 结束) */
+function levelRange(lv){        // lv: 1~30
+  const start = (lv-1) * EXP_PER_LEVEL;
+  return { start, end: lv*EXP_PER_LEVEL };
 }
+/* 由总经验计算当前等级（1~30） */
+function levelOf(exp){
+  const lv = Math.floor(Math.max(0, exp) / EXP_PER_LEVEL) + 1;
+  return Math.min(MAX_LEVEL, lv);
+}
+/* 兼容旧接口：stageOf 返回 0~4 的外观档次 */
+function stageOf(exp){
+  const lv = levelOf(exp);
+  return Math.min(STAGE_DEFS.length-1, Math.floor((lv-1)/6));
+}
+/* 兼容旧接口：STAGES 数组 */
+const STAGES = STAGE_DEFS;
 /* 饥饿衰减：每小时掉多少饱食度 */
 const HUNGER_DECAY_PER_HOUR = 4.5;
 const FEED_COST = 1;        // 每次投喂消耗猫粮
-const EXP_PER_FEED = 10;    // 每次投喂获得经验
+const EXP_PER_FEED = 10;    // 每次投喂获得经验（每级 100 经验 → 约 10 次投喂升一级）
 const BOND_PER_PET = 1;     // 每次撸猫亲密度
 const MEAL_FULL = 100;
 
@@ -1006,24 +1038,28 @@ function showFlash(mood, dur=1400){
 
 function renderHUD(){
   document.getElementById('petName').textContent = S.name || '喵紫';
-  const idx = stageOf(S.exp);
-  const st = STAGES[idx];
-  document.getElementById('lvlChip').textContent = 'Lv.' + (idx+1);
-  document.getElementById('stageTag').textContent = st.name;
+  const lv = levelOf(S.exp);
+  const stIdx = stageOf(S.exp);
+  const st = STAGE_DEFS[stIdx];
+  const rank = RANK_NAMES[Math.min(RANK_NAMES.length-1, lv-1)];
+  document.getElementById('lvlChip').textContent = 'Lv.' + lv;
+  document.getElementById('stageTag').textContent = rank;
 
-  // 经验条
-  const next = STAGES[idx+1];
-  const curBase = st.min;
-  const curMax = st.max;
-  let expPct;
-  if(!next){ expPct = 100; document.getElementById('expText').textContent = '满级 · 猫仙圆满'; }
-  else{
-    expPct = Math.max(0, Math.min(100, (S.exp - curBase)/(curMax - curBase + 1) * 100));
-    document.getElementById('expText').textContent = S.exp + ' / ' + (curMax+1);
+  // 经验条（每级固定 100 经验）
+  const r = levelRange(lv);
+  const isMax = lv >= MAX_LEVEL;
+  let expPct, expLabel;
+  if(isMax){
+    expPct = 100;
+    expLabel = '满级 · ' + rank;
+  } else {
+    expPct = Math.max(0, Math.min(100, (S.exp - r.start) / EXP_PER_LEVEL * 100));
+    expLabel = Math.round(S.exp - r.start) + ' / ' + EXP_PER_LEVEL;
   }
   const expBar = document.getElementById('expBar');
   expBar.style.width = expPct.toFixed(1)+'%';
-  expBar.parentElement.classList.toggle('full', !next);
+  expBar.parentElement.classList.toggle('full', isMax);
+  document.getElementById('expText').textContent = expLabel;
 
   // 饱食度
   const mealPct = Math.max(0, Math.min(100, S.meal));
@@ -1145,15 +1181,21 @@ function completeTask(id){
 /* ---------- 投喂 ---------- */
 function feed(){
   if(S.food < FEED_COST){ toast('猫粮不够啦，先去完成任务吧~'); return; }
-  const beforeIdx = stageOf(S.exp);
+  const beforeLv = levelOf(S.exp);
   S.food -= FEED_COST;
   S.totalFeeds++;
   S.meal = Math.min(MEAL_FULL, S.meal + 22);
-  S.exp += EXP_PER_FEED;
+  // 满级后经验不再增长
+  const wasMax = S.exp >= MAX_LEVEL * EXP_PER_LEVEL;
+  if(!wasMax) S.exp += EXP_PER_FEED;
+  const nowMax = S.exp >= MAX_LEVEL * EXP_PER_LEVEL;
+  if(nowMax && !wasMax) S.exp = MAX_LEVEL * EXP_PER_LEVEL; // 封顶
 
   pushLog({ type:'feed', emoji:'🍚', title:'投喂了小猫', amt:'-'+FEED_COST, unit:'猫粮', sign:'minus' });
 
-  const afterIdx = stageOf(S.exp);
+  const afterLv = levelOf(S.exp);
+  const r = levelRange(afterLv);
+  const left = Math.max(0, r.end - S.exp);
   sfxFeed();
   showFlash('eat', 1300);
   equipCrumbs();
@@ -1165,8 +1207,13 @@ function feed(){
   updateTaskUI();
   renderStats();
 
-  if(afterIdx > beforeIdx){
-    setTimeout(()=>{ levelUp(afterIdx); }, 1200);
+  if(afterLv > beforeLv || (nowMax && !wasMax)){
+    setTimeout(()=>{ levelUp(nowMax ? MAX_LEVEL : afterLv); }, 1200);
+  } else if(afterLv >= MAX_LEVEL){
+    setTimeout(()=>floatText('已是满级猫仙 ✨', '#C9871B', 1200), 300);
+  } else {
+    // 提示还差多少经验升级
+    setTimeout(()=>floatText('还差 '+left+' 经验升级', '#9B8FB5', 1100), 420);
   }
 }
 
@@ -1203,17 +1250,22 @@ function toggleSleep(){
 }
 
 /* ---------- 升级 ---------- */
-function levelUp(newIdx){
-  const st = STAGES[newIdx];
+function levelUp(newLv){
+  newLv = Math.min(MAX_LEVEL, newLv);
+  const rank = RANK_NAMES[Math.min(RANK_NAMES.length-1, newLv-1)];
+  const stageIdx = stageOf((newLv-1)*EXP_PER_LEVEL);
+  const st = STAGE_DEFS[stageIdx];
+  const isMax = newLv >= MAX_LEVEL;
   sfxLevel();
   showFlash('levelup', 2200);
-  document.getElementById('levelModalEmoji').textContent = st.deco==='halo'?'👑':'🌟';
-  document.getElementById('levelModalTitle').textContent = '升级啦！';
+  document.getElementById('levelModalEmoji').textContent = isMax?'👑':'🌟';
+  document.getElementById('levelModalTitle').textContent = isMax ? '满级啦！' : ('升到 Lv.'+newLv+' 啦！');
   document.getElementById('levelModalText').innerHTML =
-    `${esc(S.name)} 成长为「<b>${st.name}</b>」啦！<br>继续完成任务，陪它一起长大吧 🎉`;
+    `${esc(S.name)} 成为「<b>${rank}</b>」${isMax?'，已修成猫仙之尊！🏆':'！'}<br>` +
+    (isMax ? '谢谢你这么久的照顾，喵~ 💜' : '继续完成任务，陪它一起长大吧 🎉');
   document.getElementById('levelModal').classList.add('show');
-  pushLog({ type:'level', emoji:'🌟', title:'小猫升级为「'+st.name+'」', amt:'', unit:'', sign:'plus' });
-  floatText('升级！'+st.name+' 🌟', '#C9871B', 1400);
+  pushLog({ type:'level', emoji:'🌟', title:'小猫升到 Lv.'+newLv+'「'+rank+'」', amt:'', unit:'', sign:'plus' });
+  floatText('Lv.'+newLv+' '+rank+' 🌟', '#C9871B', 1400);
   save();
   renderHUD();
   renderStats();
